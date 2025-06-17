@@ -139,4 +139,51 @@ GET /api/viagens/1
 - **Data de partida**: obrigatória, não pode ser no passado
 - **Data de retorno**: obrigatória, deve ser posterior à data de partida
 - **Preço**: obrigatório, deve ser positivo
-- **Descrição**: ob
+- **Descrição**: obrigatória, não pode estar vazia
+- **Vagas disponíveis**: não pode ser negativo
+- **Categoria**: opcional (ECONOMICA, EXECUTIVA, PRIMEIRA_CLASSE)
+
+## Códigos de Resposta HTTP
+
+- **200 OK**: Operação realizada com sucesso
+- **201 Created**: Recurso criado com sucesso
+- **204 No Content**: Recurso deletado com sucesso
+- **400 Bad Request**: Dados inválidos ou erro de validação
+- **404 Not Found**: Recurso não encontrado
+- **500 Internal Server Error**: Erro interno do servidor
+
+## Exemplos de Uso
+
+### Criar uma viagem
+```bash
+curl -X POST http://localhost:8080/api/viagens \
+  -H "Content-Type: application/json" \
+  -d '{
+    "destino": "Rio de Janeiro",
+    "dataPartida": "2025-12-15",
+    "dataRetorno": "2025-12-22",
+    "preco": 1800.00,
+    "descricao": "Fim de ano no Rio de Janeiro",
+    "vagasDisponiveis": 40,
+    "categoria": "ECONOMICA"
+  }'
+```
+
+### Buscar viagens por destino
+```bash
+curl http://localhost:8080/api/viagens?destino=Paris
+```
+
+### Reservar vagas
+```bash
+curl -X POST http://localhost:8080/api/viagens/1/reservar \
+  -H "Content-Type: application/json" \
+  -d '{"quantidade": 2}'
+```
+
+## Dados de Teste
+
+A API vem com dados iniciais para teste:
+- Paris - Viagem romântica (€2.500,00)
+- Tokyo - Aventura cultural (€4.500,00)  
+- Nova York - A cidade que nunca dorme (€3.200,00)
