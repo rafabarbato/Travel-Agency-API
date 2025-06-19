@@ -1,35 +1,42 @@
 package com.agencia.travelagencyapi.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+@Entity
 public class Viagem {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank(message = "Destino é obrigatório")
     private String destino;
-    
+
     @NotNull(message = "Data de partida é obrigatória")
     private LocalDate dataPartida;
-    
+
     @NotNull(message = "Data de retorno é obrigatória")
     private LocalDate dataRetorno;
-    
+
     @NotNull(message = "Preço é obrigatório")
     @Positive(message = "Preço deve ser positivo")
     private BigDecimal preco;
-    
+
     @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
-    
+
     private Integer vagasDisponiveis;
-    
+
     private String categoria; // ECONOMICA, EXECUTIVA, PRIMEIRA_CLASSE
-    
+
     private Boolean ativa;
 
     // Construtores
@@ -38,7 +45,7 @@ public class Viagem {
         this.vagasDisponiveis = 0;
     }
 
-    public Viagem(String destino, LocalDate dataPartida, LocalDate dataRetorno, 
+    public Viagem(String destino, LocalDate dataPartida, LocalDate dataRetorno,
                   BigDecimal preco, String descricao, Integer vagasDisponiveis, String categoria) {
         this();
         this.destino = destino;

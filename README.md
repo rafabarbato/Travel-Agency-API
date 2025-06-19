@@ -1,162 +1,110 @@
 # API para Agência de Viagem
 
-Esta é uma API RESTful desenvolvida com Java e Spring Boot para gerenciar viagens de uma agência de turismo.
+Esta é uma API RESTful desenvolvida com Java e Spring Boot para gerenciar viagens de uma agência de turismo. A aplicação utiliza um banco de dados em memória (H2), possui endpoints protegidos com Spring Security e vem com dados iniciais para facilitar os testes.
 
 ## Funcionalidades
 
 - ✅ Listar todas as viagens ou apenas as ativas
 - ✅ Buscar viagens por ID, destino, categoria ou faixa de preço
-- ✅ Criar novas viagens
-- ✅ Atualizar viagens (completa ou parcialmente)
-- ✅ Deletar viagens
-- ✅ Desativar viagens (soft delete)
-- ✅ Reservar vagas
-- ✅ Validação de dados
+- ✅ Criar novas viagens (requer autenticação)
+- ✅ Atualizar viagens (requer autenticação)
+- ✅ Deletar viagens (requer autenticação)
+- ✅ Desativar viagens (soft delete, requer autenticação)
+- ✅ Reservar vagas (requer autenticação)
+- ✅ Validação de dados de entrada
 - ✅ Tratamento de exceções
+- ✅ Segurança de endpoints com autenticação baseada em usuário e senha
 
 ## Tecnologias Utilizadas
 
 - Java 17
 - Spring Boot 3.2.0
 - Spring Web
+- Spring Data JPA
+- Spring Security
 - Spring Validation
+- H2 Database (banco de dados em memória)
 - Maven
-
-## Estrutura do Projeto
-
-```
-src/main/java/com/agencia/travelagencyapi/
-├── TravelAgencyApiApplication.java      # Classe principal
-├── controller/
-│   └── ViagemController.java           # Controlador REST
-├── model/
-│   └── Viagem.java                     # Modelo de dados
-├── service/
-│   └── ViagemService.java              # Camada de serviço
-└── exception/
-    └── GlobalExceptionHandler.java     # Tratamento global de exceções
-```
 
 ## Como Executar
 
-1. Clone o projeto
-2. Navegue até a pasta do projeto
-3. Execute: `mvn spring-boot:run`
-4. A API estará disponível em: `http://localhost:8080`
+### 1. Pré-requisitos
+- Java 17 (ou superior)
+- Apache Maven
+
+### 2. Configuração e Execução
+1.  Clone o repositório para sua máquina local.
+2.  Abra um terminal e navegue até a pasta raiz do projeto (onde se encontra o arquivo `pom.xml`).
+3.  Execute o seguinte comando para iniciar a aplicação:
+    ```bash
+    mvn spring-boot:run
+    ```
+4.  A API estará disponível em `http://localhost:8080`.
+
+### 3. Acessando o Banco de Dados (H2 Console)
+A aplicação é configurada para usar um banco de dados em memória H2, que pode ser acessado enquanto a aplicação está rodando.
+
+1.  Com a aplicação em execução, abra seu navegador e acesse: `http://localhost:8080/h2-console`
+2.  Na tela de login, utilize as seguintes configurações:
+    - **JDBC URL**: `jdbc:h2:mem:travelagencydb`
+    - **User Name**: `sa`
+    - **Password**: (deixe em branco)
+3.  Clique em **Connect**. Agora você pode visualizar as tabelas `VIAGEM` e `USUARIO` e executar consultas SQL.
+
+## Segurança e Usuário Padrão
+
+A API utiliza Spring Security para proteger endpoints de escrita (POST, PUT, PATCH, DELETE). Para realizar essas operações, é necessário se autenticar.
+
+Ao iniciar a aplicação, um usuário padrão é criado para facilitar os testes:
+- **Usuário**: `admin`
+- **Senha**: `admin`
 
 ## Endpoints da API
 
-### 1. Listar Viagens
+**Observação:** Endpoints que modificam dados (POST, PUT, PATCH, DELETE) requerem autenticação.
+
+### 1. Listar Viagens (Público)
 - **GET** `/api/viagens`
 - **Parâmetros opcionais:**
-  - `destino`: filtrar por destino
-  - `categoria`: filtrar por categoria (ECONOMICA, EXECUTIVA, PRIMEIRA_CLASSE)
-  - `precoMin` e `precoMax`: filtrar por faixa de preço
-  - `apenasAtivas`: mostrar apenas viagens ativas (padrão: true)
+  - `destino`, `categoria`, `precoMin`, `precoMax`, `apenasAtivas`
 
-**Exemplo:**
-```bash
-GET /api/viagens?destino=Paris
-GET /api/viagens?categoria=ECONOMICA
-GET /api/viagens?precoMin=1000&precoMax=3000
-```
-
-### 2. Buscar Viagem por ID
+### 2. Buscar Viagem por ID (Público)
 - **GET** `/api/viagens/{id}`
 
-**Exemplo:**
-```bash
-GET /api/viagens/1
-```
-
-### 3. Criar Nova Viagem
+### 3. Criar Nova Viagem (Requer Autenticação)
 - **POST** `/api/viagens`
-- **Body (JSON):**
-```json
-{
-  "destino": "Barcelona",
-  "dataPartida": "2025-10-15",
-  "dataRetorno": "2025-10-25",
-  "preco": 2800.00,
-  "descricao": "Aventura pela Catalunha",
-  "vagasDisponiveis": 30,
-  "categoria": "ECONOMICA"
-}
-```
 
-### 4. Atualizar Viagem Completa
+### 4. Atualizar Viagem Completa (Requer Autenticação)
 - **PUT** `/api/viagens/{id}`
-- **Body:** Mesma estrutura do POST
 
-### 5. Atualizar Viagem Parcialmente
+### 5. Atualizar Viagem Parcialmente (Requer Autenticação)
 - **PATCH** `/api/viagens/{id}`
-- **Body (JSON):**
-```json
-{
-  "preco": 2500.00,
-  "vagasDisponiveis": 25
-}
-```
 
-### 6. Deletar Viagem
+### 6. Deletar Viagem (Requer Autenticação)
 - **DELETE** `/api/viagens/{id}`
 
-### 7. Desativar Viagem
+### 7. Desativar Viagem (Requer Autenticação)
 - **PATCH** `/api/viagens/{id}/desativar`
 
-### 8. Reservar Vagas
+### 8. Reservar Vagas (Requer Autenticação)
 - **POST** `/api/viagens/{id}/reservar`
-- **Body (JSON):**
-```json
-{
-  "quantidade": 2
-}
-```
 
-### 9. Status da API
+### 9. Status da API (Público)
 - **GET** `/api/viagens/status`
 
-## Modelo de Dados
+## Exemplos de Uso com `curl`
 
-### Viagem
-```json
-{
-  "id": 1,
-  "destino": "Paris",
-  "dataPartida": "2025-08-15",
-  "dataRetorno": "2025-08-25",
-  "preco": 2500.00,
-  "descricao": "Viagem romântica para Paris",
-  "vagasDisponiveis": 18,
-  "categoria": "ECONOMICA",
-  "ativa": true
-}
+### Buscar viagens (público)
+```bash
+curl http://localhost:8080/api/viagens?destino=Paris
 ```
 
-## Validações
+### Criar uma viagem (autenticado)
+Para executar este comando, você deve fornecer o usuário e a senha com o parâmetro `-u`.
 
-- **Destino**: obrigatório, não pode estar vazio
-- **Data de partida**: obrigatória, não pode ser no passado
-- **Data de retorno**: obrigatória, deve ser posterior à data de partida
-- **Preço**: obrigatório, deve ser positivo
-- **Descrição**: obrigatória, não pode estar vazia
-- **Vagas disponíveis**: não pode ser negativo
-- **Categoria**: opcional (ECONOMICA, EXECUTIVA, PRIMEIRA_CLASSE)
-
-## Códigos de Resposta HTTP
-
-- **200 OK**: Operação realizada com sucesso
-- **201 Created**: Recurso criado com sucesso
-- **204 No Content**: Recurso deletado com sucesso
-- **400 Bad Request**: Dados inválidos ou erro de validação
-- **404 Not Found**: Recurso não encontrado
-- **500 Internal Server Error**: Erro interno do servidor
-
-## Exemplos de Uso
-
-### Criar uma viagem
 ```bash
 curl -X POST http://localhost:8080/api/viagens \
+  -u admin:admin \
   -H "Content-Type: application/json" \
   -d '{
     "destino": "Rio de Janeiro",
@@ -169,21 +117,16 @@ curl -X POST http://localhost:8080/api/viagens \
   }'
 ```
 
-### Buscar viagens por destino
-```bash
-curl http://localhost:8080/api/viagens?destino=Paris
-```
-
-### Reservar vagas
+### Reservar vagas (autenticado)
 ```bash
 curl -X POST http://localhost:8080/api/viagens/1/reservar \
+  -u admin:admin \
   -H "Content-Type: application/json" \
   -d '{"quantidade": 2}'
 ```
 
-## Dados de Teste
+## Dados Iniciais
 
-A API vem com dados iniciais para teste:
-- Paris - Viagem romântica (€2.500,00)
-- Tokyo - Aventura cultural (€4.500,00)  
-- Nova York - A cidade que nunca dorme (€3.200,00)
+A API vem com dados iniciais que são carregados no banco de dados em memória toda vez que a aplicação é iniciada:
+- **Usuário**: `admin` com senha `admin` e permissão `ADMIN`.
+- **Viagens**: Uma viagem para Paris e outra para Tokyo.
