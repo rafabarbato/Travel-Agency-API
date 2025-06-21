@@ -16,10 +16,22 @@ import java.util.Optional;
 public class ViagemService {
 
     @Autowired
-    private ViagemRepository viagemRepository; // Injeção do repositório JPA
+    private ViagemRepository viagemRepository;
 
-    // O construtor com dados de teste e o Map em memória foram removidos.
-    // Os dados agora serão persistidos no banco.
+    // NOVO MÉTODO QUE CENTRALIZA A LÓGICA DE BUSCA
+    public List<Viagem> pesquisarViagens(String destino, String categoria, BigDecimal precoMin, BigDecimal precoMax, Boolean apenasAtivas) {
+        if (destino != null && !destino.isEmpty()) {
+            return viagemRepository.findByDestinoContainingIgnoreCaseAndAtiva(destino, apenasAtivas);
+        } else if (categoria != null && !categoria.isEmpty()) {
+            return viagemRepository.findByCategoriaIgnoreCaseAndAtiva(categoria, apenasAtivas);
+        } else if (precoMin != null && precoMax != null) {
+            return viagemRepository.findByPrecoBetweenAndAtiva(precoMin, precoMax, apenasAtivas);
+        } else if (apenasAtivas) {
+            return viagemRepository.findByAtiva(true);
+        } else {
+            return viagemRepository.findAll();
+        }
+    }
 
     public List<Viagem> listarTodasViagens() {
         return viagemRepository.findAll();
@@ -44,7 +56,9 @@ public class ViagemService {
     public List<Viagem> buscarPorCategoria(String categoria) {
         return viagemRepository.findByCategoriaIgnoreCaseAndAtiva(categoria, true);
     }
-
+    
+    // ... resto da classe permanece igual (criarViagem, atualizarViagem, etc.)
+    
     @Transactional
     public Viagem criarViagem(Viagem viagem) {
         validarViagem(viagem);
@@ -56,7 +70,7 @@ public class ViagemService {
     public Optional<Viagem> atualizarViagem(Long id, Viagem viagemAtualizada) {
         return viagemRepository.findById(id).map(viagemExistente -> {
             validarViagem(viagemAtualizada);
-            viagemAtualizada.setId(id); // Garante que o ID correto seja mantido
+            viagemAtualizada.setId(id);
             return viagemRepository.save(viagemAtualizada);
         });
     }
@@ -99,7 +113,7 @@ public class ViagemService {
             }
         });
 
-        validarViagem(viagem); // Re-valida o estado da viagem após as alterações
+        validarViagem(viagem);
         return Optional.of(viagemRepository.save(viagem));
     }
 

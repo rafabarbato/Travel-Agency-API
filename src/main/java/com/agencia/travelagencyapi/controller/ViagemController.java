@@ -21,7 +21,7 @@ public class ViagemController {
     @Autowired
     private ViagemService viagemService;
 
-    // GET - Listar todas as viagens
+    // GET - Listar todas as viagens (AGORA REFATORADO)
     @GetMapping
     public ResponseEntity<List<Viagem>> listarViagens(
             @RequestParam(required = false) String destino,
@@ -30,19 +30,9 @@ public class ViagemController {
             @RequestParam(required = false) BigDecimal precoMax,
             @RequestParam(required = false, defaultValue = "true") Boolean apenasAtivas) {
         
-        List<Viagem> viagens;
-        
-        if (destino != null) {
-            viagens = viagemService.buscarPorDestino(destino);
-        } else if (categoria != null) {
-            viagens = viagemService.buscarPorCategoria(categoria);
-        } else if (precoMin != null && precoMax != null) {
-            viagens = viagemService.buscarPorFaixaPreco(precoMin, precoMax);
-        } else if (apenasAtivas) {
-            viagens = viagemService.listarViagensAtivas();
-        } else {
-            viagens = viagemService.listarTodasViagens();
-        }
+        // A lógica de decisão foi movida para o ViagemService.
+        // O controller apenas repassa os parâmetros.
+        List<Viagem> viagens = viagemService.pesquisarViagens(destino, categoria, precoMin, precoMax, apenasAtivas);
         
         return ResponseEntity.ok(viagens);
     }
