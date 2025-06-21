@@ -19,7 +19,8 @@ Esta é uma API RESTful desenvolvida com Java e Spring Boot para gerenciar viage
 
 - Banco de Dados working
 
-![Banco de Dados](https://github.com/user-attachments/assets/ec25884b-c778-4e20-be95-ed44329356dc)
+![Banco de Dados](https://github.com/user-attachments/assets/6c4b75a3-7f0d-44f4-9d55-73b26321e5b0)
+
 
 - curl working
 
