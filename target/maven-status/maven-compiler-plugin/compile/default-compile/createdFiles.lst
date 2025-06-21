@@ -1,5 +1,0 @@
-com\agencia\travelagencyapi\TravelAgencyApiApplication.class
-com\agencia\travelagencyapi\service\ViagemService.class
-com\agencia\travelagencyapi\model\Viagem.class
-com\agencia\travelagencyapi\exception\GlobalExceptionHandler.class
-com\agencia\travelagencyapi\controller\ViagemController.class
