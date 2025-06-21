@@ -138,11 +138,19 @@ curl -X POST http://localhost:8080/api/viagens/1/reservar \
 
 ### Adicionar uma avaliação à viagem de ID 1 (autenticado)
 
+1. Crie um arquivo `avaliacao.json` com o seguinte conteúdo:
+
+```json
+{
+  "nota": 5,
+  "comentario": "Viagem fantástica!"
+}
+
+2. Execute o comando curl, lendo os dados do novo arquivo:
+```
+
 ```bash
-curl -X POST http://localhost:8080/api/viagens/1/avaliacoes \
-  -u admin:admin \
-  -H "Content-Type: application/json" \
-  -d '{ "nota": 5, "comentario": "Viagem fantástica!" }'
+curl -X POST http://localhost:8080/api/viagens/1/avaliacoes -u admin:admin -H "Content-Type: application/json" -d @avaliacao.json
 ```
 
 ## Dados Iniciais
