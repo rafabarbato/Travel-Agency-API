@@ -9,7 +9,7 @@ Esta é uma API RESTful desenvolvida com Java e Spring Boot para gerenciar viage
   - ✅ Criar novas viagens (requer autenticação)
   - ✅ Atualizar viagens (requer autenticação)
   - ✅ Deletar viagens (requer autenticação)
-  - ✅ **Registrar e consultar avaliações de viagens (novo)**
+  - ✅ Registrar e consultar avaliações de viagens
   - ✅ Reservar vagas (requer autenticação)
   - ✅ Validação de dados de entrada
   - ✅ Tratamento de exceções
@@ -62,7 +62,7 @@ A aplicação é configurada para usar um banco de dados em memória H2, que pod
       - **JDBC URL**: `jdbc:h2:mem:travelagencydb`
       - **User Name**: `sa`
       - **Password**: (deixe em branco)
-3.  Clique em **Connect**. Agora você pode visualizar as tabelas `VIAGEM`, `USUARIO` e `AVALIACAO` e executar consultas SQL.
+3.  Clique em **Connect**. Agora você pode visualizar as tabelas `VIAGEM`, `USUARIO` e **`AVALIACAO`** e executar consultas SQL.
 
 ## Segurança e Usuário Padrão
 
@@ -77,54 +77,73 @@ Ao iniciar a aplicação, um usuário padrão é criado para facilitar os testes
 
 **Observação:** Endpoints que modificam dados (POST, PUT, PATCH, DELETE) requerem autenticação.
 
-#### Seção de Viagens
-
-  - **`GET /api/viagens`**: Lista viagens com filtros.
-  - **`GET /api/viagens/{id}`**: Busca uma viagem por ID.
-  - **`POST /api/viagens`**: Cria uma nova viagem.
-  - **`PUT /api/viagens/{id}`**: Atualiza uma viagem.
-  - **`DELETE /api/viagens/{id}`**: Deleta uma viagem.
-  - **`POST /api/viagens/{id}/reservar`**: Reserva vagas em uma viagem.
-
-#### Seção de Avaliações
-
-  - **`GET /api/viagens/{id}/avaliacoes`**: Lista as avaliações de uma viagem.
-  - **`POST /api/viagens/{id}/avaliacoes`**: Adiciona uma nova avaliação a uma viagem.
+1.  **Listar Viagens (Público)**
+      - **GET** `/api/viagens`
+      - **Parâmetros opcionais:**
+          - `destino`, `categoria`, `precoMin`, `precoMax`, `apenasAtivas`
+2.  **Buscar Viagem por ID (Público)**
+      - **GET** `/api/viagens/{id}`
+3.  **Criar Nova Viagem (Requer Autenticação)**
+      - **POST** `/api/viagens`
+4.  **Atualizar Viagem Completa (Requer Autenticação)**
+      - **PUT** `/api/viagens/{id}`
+5.  **Atualizar Viagem Parcialmente (Requer Autenticação)**
+      - **PATCH** `/api/viagens/{id}`
+6.  **Deletar Viagem (Requer Autenticação)**
+      - **DELETE** `/api/viagens/{id}`
+7.  **Desativar Viagem (Requer Autenticação)**
+      - **PATCH** `/api/viagens/{id}/desativar`
+8.  **Reservar Vagas (Requer Autenticação)**
+      - **POST** `/api/viagens/{id}/reservar`
+9.  **Status da API (Público)**
+      - **GET** `/api/viagens/status`
+10. **Listar Avaliações de uma Viagem (Público)**
+      - **GET** `/api/viagens/{id}/avaliacoes`
+11. **Criar Nova Avaliação (Requer Autenticação)**
+      - **POST** `/api/viagens/{id}/avaliacoes`
 
 ## Exemplos de Uso com `curl`
 
-#### Criar uma nova viagem
+### Buscar viagens (público)
 
-1.  Crie um arquivo `viagem.json`:
-    ```json
-    {
-      "destino": "Kyoto",
-      "dataPartida": "2025-11-10",
-      "dataRetorno": "2025-11-20",
-      "preco": 5200.00,
-      "descricao": "Outono no Japão",
-      "vagasDisponiveis": 10,
-      "categoria": "EXECUTIVA"
-    }
-    ```
-2.  Execute o comando:
-    ```bash
-    curl -X POST http://localhost:8080/api/viagens -u admin:admin -H "Content-Type: application/json" -d @viagem.json
-    ```
+```bash
+curl http://localhost:8080/api/viagens?destino=Paris
+```
 
-#### Adicionar uma avaliação à viagem de ID 1
+### Criar uma viagem (autenticado)
 
-1.  Crie um arquivo `avaliacao.json`:
-    ```json
-    {
-      "nota": 5,
-      "comentario": "Inesquecível! A melhor viagem da minha vida."
-    }
-    ```
-2.  Execute o comando:
-    ```bash
-    curl -X POST http://localhost:8080/api/viagens/1/avaliacoes -u admin:admin -H "Content-Type: application/json" -d @avaliacao.json
-    ```
+```bash
+curl -X POST http://localhost:8080/api/viagens \
+  -u admin:admin \
+  -H "Content-Type: application/json" \
+  -d '{
+    "destino": "Rio de Janeiro",
+    "dataPartida": "2025-12-15",
+    "dataRetorno": "2025-12-22",
+    "preco": 1800.00,
+    "descricao": "Fim de ano no Rio de Janeiro",
+    "vagasDisponiveis": 40,
+    "categoria": "ECONOMICA"
+  }'
+```
+
+### Reservar vagas (autenticado)
+
+```bash
+curl -X POST http://localhost:8080/api/viagens/1/reservar \
+  -u admin:admin \
+  -H "Content-Type: application/json" \
+  -d '{"quantidade": 2}'
+```
+
+### Adicionar uma avaliação à viagem de ID 1 (autenticado)
+
+```bash
+curl -X POST http://localhost:8080/api/viagens/1/avaliacoes \
+  -u admin:admin \
+  -H "Content-Type: application/json" \
+  -d '{ "nota": 5, "comentario": "Viagem fantástica!" }'
+```
 
 ## Dados Iniciais
 
