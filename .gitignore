@@ -1,0 +1,27 @@
+# Build
+target/
+dist/
+build/
+
+# Node.js
+node_modules/
+
+# Python
+venv/
+__pycache__/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# System files
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

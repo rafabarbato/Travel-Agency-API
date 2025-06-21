@@ -1,5 +1,6 @@
 package com.agencia.travelagencyapi.controller;
 
+import com.agencia.travelagencyapi.model.Avaliacao;
 import com.agencia.travelagencyapi.model.Viagem;
 import com.agencia.travelagencyapi.service.ViagemService;
 import jakarta.validation.Valid;
@@ -150,5 +151,27 @@ public class ViagemController {
                 "viagensAtivas", viagemService.listarViagensAtivas().size()
         );
         return ResponseEntity.ok(status);
+    }
+
+    // POST - Criar uma nova avaliação para uma viagem
+    @PostMapping("/{id}/avaliacoes")
+    public ResponseEntity<?> criarAvaliacao(@PathVariable Long id, @Valid @RequestBody Avaliacao avaliacao) {
+        try {
+            Avaliacao novaAvaliacao = viagemService.adicionarAvaliacao(id, avaliacao);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaAvaliacao);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        }
+    }
+
+    // GET - Listar todas as avaliações de uma viagem
+    @GetMapping("/{id}/avaliacoes")
+    public ResponseEntity<?> listarAvaliacoes(@PathVariable Long id) {
+        try {
+            List<Avaliacao> avaliacoes = viagemService.listarAvaliacoesPorViagemId(id);
+            return ResponseEntity.ok(avaliacoes);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", e.getMessage()));
+        }
     }
 }

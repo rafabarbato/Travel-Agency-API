@@ -1,5 +1,7 @@
 package com.agencia.travelagencyapi.service;
 
+import com.agencia.travelagencyapi.model.Avaliacao;
+import com.agencia.travelagencyapi.repository.AvaliacaoRepository;
 import com.agencia.travelagencyapi.model.Viagem;
 import com.agencia.travelagencyapi.repository.ViagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ViagemService {
 
     @Autowired
     private ViagemRepository viagemRepository;
+    
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
 
     // NOVO MÉTODO QUE CENTRALIZA A LÓGICA DE BUSCA
     public List<Viagem> pesquisarViagens(String destino, String categoria, BigDecimal precoMin, BigDecimal precoMax, Boolean apenasAtivas) {
@@ -136,6 +141,26 @@ public class ViagemService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public Avaliacao adicionarAvaliacao(Long viagemId, Avaliacao avaliacao) {
+        // Busca a viagem pelo ID. Se não encontrar, lança uma exceção.
+        Viagem viagem = viagemRepository.findById(viagemId)
+                .orElseThrow(() -> new IllegalArgumentException("Viagem com ID " + viagemId + " não encontrada."));
+
+        // Associa a avaliação com a viagem encontrada
+        avaliacao.setViagem(viagem);
+
+        // Salva a nova avaliação no banco de dados
+        return avaliacaoRepository.save(avaliacao);
+    }
+
+    public List<Avaliacao> listarAvaliacoesPorViagemId(Long viagemId) {
+        if (!viagemRepository.existsById(viagemId)) {
+            throw new IllegalArgumentException("Viagem com ID " + viagemId + " não encontrada.");
+        }
+        return avaliacaoRepository.findByViagemId(viagemId);
     }
 
     @Transactional
