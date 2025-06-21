@@ -145,9 +145,9 @@ curl -X POST http://localhost:8080/api/viagens/1/reservar \
   "nota": 5,
   "comentario": "Viagem fantástica!"
 }
+```
 
 2. Execute o comando curl, lendo os dados do novo arquivo:
-```
 
 ```bash
 curl -X POST http://localhost:8080/api/viagens/1/avaliacoes -u admin:admin -H "Content-Type: application/json" -d @avaliacao.json
