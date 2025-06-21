@@ -93,8 +93,6 @@ Ao iniciar a aplicação, um usuário padrão é criado para facilitar os testes
 
 ## Exemplos de Uso com `curl`
 
-A maneira mais robusta de usar `curl` no Windows é salvar o corpo JSON em um arquivo e usar a opção `-d @nome_do_arquivo.json`.
-
 #### Criar uma nova viagem
 
 1.  Crie um arquivo `viagem.json`:
